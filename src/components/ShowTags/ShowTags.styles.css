@@ -1,0 +1,16 @@
+.tagConatiner{
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+}
+.tagItems{
+    margin-right: 0.5rem;    
+    margin-bottom: 0.5rem;
+    background-color: brown;
+    color: white;
+    border-radius: 5px;
+}   
+.btn-close{
+    background-color: red
+
+}
