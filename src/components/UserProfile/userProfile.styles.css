@@ -8,11 +8,45 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin:2rem;
 }
 .profile-header{
-    height: 40vh;
-    width:60vw;
+    display: flex;
+    flex-direction: column;
     margin: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    align-items: center;
+    /* justify-content: center; */
+}
+.profile-header-extra{
+    display:flex;
+    justify-content: space-evenly;
+
+}
+.profile-photo-container{
+    max-width:200px;
+    max-height: auto;
+}
+.profile-header-views, .profile-header-followers {
+    display: flex;
+    flex-direction: column;
+    /* justify-content:center; */
+    align-items: center;
+    margin: 5px;
+}
+.profile-links{
+    display:flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+.fa-brands{
+    font-size: 2rem;
+}
+.fa-instagram{
+    color:rgb(248, 170, 183);
+}
+.profile-editables{
+    display: flex;
+    justify-content: space-between;
 }

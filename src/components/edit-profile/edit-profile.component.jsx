@@ -2,7 +2,7 @@ import { useState } from "react";
 import { setProfileImageHandler } from "../../utils/Firebase/Firebase.utils";
 import { storage } from "../../utils/Firebase/Firebase.utils";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useContext,useEffect } from "react";
+import { useContext } from "react";
 import { v4 } from "uuid";
 import { UserContext } from "../../context/user.context";
 import { changeDisplayName,changeFacebookLink,changeInstagramLink } from "../../utils/Firebase/Firebase.utils";

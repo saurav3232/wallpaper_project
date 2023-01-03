@@ -3,10 +3,8 @@ import {
   getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { collection, addDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-
 const firebaseConfig = {
   apiKey: "AIzaSyCZJQ_bgIuTe8m-zy75XfZBclxGo1gTAng",
   authDomain: "wallpaper-project-e1c7d.firebaseapp.com",
@@ -70,15 +68,50 @@ export const addImageLinktoDb = async (imageDoc) => {
   const createdAt = new Date();
   const likes = 0, dislikes = 0;
   try {
-    const docRef = await addDoc(collection(db, "images"), {
+    // const docRef = await addDoc(collection(db, `images`), {
+    //   ...imageDoc,
+    //   createdAt,
+    //   likes,
+    //   dislikes,
+    // });
+    const {imageUrl,userId,category}=imageDoc;
+    const imageDocRef = doc(db, "images", category);
+    const imageSnapshot=await getDoc(imageDocRef);
+    const imageObj={
       ...imageDoc,
       createdAt,
       likes,
       dislikes,
-    });
-    console.log("Document written with ID: ", docRef.id);
+    }
+    const obj={
+      arr:[]
+    };
+    if(!imageSnapshot.exists())
+    {
+      await setDoc(imageDocRef,obj);
+      await getDoc(doc(db, "images", category)).then((res)=>{
+        updateDoc(imageDocRef,{
+          arr:[...res.data().arr,imageObj]
+        })
+        console.log(res.data());
+      })
+    }
+    else
+    {
+      // await setDoc(imageDocRef,{...imageSnapshot.data(),imageObj});
+      console.log(imageSnapshot.data().arr);
+      const newArr=[...imageSnapshot.data().arr,imageObj];
+      await updateDoc(imageDocRef,{
+        arr:newArr
+      })
+      console.log("image exists");
+    }
+    // db.collection('images').doc(category).update({
+    //   array:app.firestore.FieldValue.arrayUnion({imageObj})
+    // })
+
+    // console.log("Document written with ID: ", docRef.id);
     alert("Added the image to your DB")
-    const {imageUrl,userId}=imageDoc;
     const userDocRef = doc(db, "users", userId);
     await getUserData(userId).then((res)=>{
        updateDoc(userDocRef,{
