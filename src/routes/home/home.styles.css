@@ -1,0 +1,14 @@
+.home-header{
+    background-image: url("https://media.istockphoto.com/id/1353553203/photo/forest-wooden-table-background-summer-sunny-meadow-with-green-grass-forest-trees-background.jpg?b=1&s=170667a&w=0&k=20&c=-jvR1WDwcloLXRgRTGeyG3frvrhPIbegdemeL6vY2Pk=");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height:50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.home-header-input{
+    display: flex;
+    width: 50%;
+}

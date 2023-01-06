@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Fragment } from "react";
 const LikedWallpapers = (props) => {
   const userInfo = props.userInfo;
   console.log(userInfo);
@@ -9,17 +9,17 @@ const LikedWallpapers = (props) => {
       <div id="carouselExampleLiked" className="carousel slide">
         <div className="carousel-inner" >
           {userInfo.likedWallpapers.map((c, idx) => (
-            <>
+            <Fragment key={idx}>
               {idx === 0 ? (
                 <div className="carousel-item active" key={idx}>
-                  <img src={c} className="d-block w-100 " alt="..." key={idx} />
+                  <img src={c} className="d-block w-100 " alt="..."  />
                 </div>
               ) : (
                 <div className="carousel-item " key={idx}>
-                  <img src={c} className="d-block w-100 " alt="..." key={idx} />
+                  <img src={c} className="d-block w-100 " alt="..."  />
                 </div>
               )}
-            </>
+            </Fragment>
           ))}
           <button
             className="carousel-control-prev"

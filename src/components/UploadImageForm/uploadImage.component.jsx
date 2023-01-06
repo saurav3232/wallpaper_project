@@ -67,7 +67,7 @@ export const UploadImage = () => {
               setImageUpload(event.target.files[0]);
             }}
           required/>
-          <button type="button" onClick={uploadImageHandler}> Upload Image</button>
+          <button type="button" className="btn btn-secondary" onClick={uploadImageHandler}> Upload Image</button>
         </div>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">

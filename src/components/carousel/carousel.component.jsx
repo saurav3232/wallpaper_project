@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "./carousel.styles.css";
 const Carousel = (props) => {
   const userInfo = props.userInfo;
   return (
     <>
       {userInfo.collections.map((col, idx) => (
-        <>
+        <Fragment key={idx}>
           <h3>{col.title}</h3>
           <div
             id={`carouselExample${idx}`}
@@ -14,14 +14,13 @@ const Carousel = (props) => {
           >
             <div className="carousel-inner" key={idx}>
               {col.arr.map((c, idx) => (
-                <>
+                <Fragment key={idx}>
                   {idx === 0 ? (
                     <div className="carousel-item active" key={idx}>
                       <img
                         src={c}
                         className="d-block w-100 "
                         alt="..."
-                        key={idx}
                       />
                     </div>
                   ) : (
@@ -30,11 +29,10 @@ const Carousel = (props) => {
                         src={c}
                         className="d-block w-100 "
                         alt="..."
-                        key={idx}
                       />
                     </div>
                   )}
-                </>
+                </Fragment>
               ))}
               <button
                 className="carousel-control-prev"
@@ -62,7 +60,7 @@ const Carousel = (props) => {
               </button>
             </div>
           </div>
-        </>
+        </Fragment>
       ))}
     </>
   );

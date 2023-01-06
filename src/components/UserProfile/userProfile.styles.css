@@ -1,6 +1,4 @@
 body {
-    background: #654ea3;
-    background: linear-gradient(to right, #e96443, #904e95);
     min-height: 100vh;
     overflow-x:hidden;
 }
@@ -44,7 +42,7 @@ body {
     font-size: 2rem;
 }
 .fa-instagram{
-    color:rgb(248, 170, 183);
+    color:rgb(238, 111, 132);
 }
 .profile-editables{
     display: flex;

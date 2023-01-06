@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Fragment } from "react";
 const UploadedWallpaperProfile = (props) => {
   const userInfo = props.userInfo;
   return (
@@ -8,17 +8,17 @@ const UploadedWallpaperProfile = (props) => {
       <div id="carouselExampleUpload" className="carousel slide">
         <div className="carousel-inner" >
           {userInfo.myWallpapers.map((c, idx) => (
-            <>
+            <Fragment key={idx}>
               {idx === 0 ? (
                 <div className="carousel-item active" key={idx}>
-                  <img src={c} className="d-block w-100 " alt="..." key={idx} />
+                  <img src={c} className="d-block w-100 " alt="..." />
                 </div>
               ) : (
                 <div className="carousel-item " key={idx}>
-                  <img src={c} className="d-block w-100 " alt="..." key={idx} />
+                  <img src={c} className="d-block w-100 " alt="..." />
                 </div>
               )}
-            </>
+            </Fragment>
           ))}
           <button
             className="carousel-control-prev"

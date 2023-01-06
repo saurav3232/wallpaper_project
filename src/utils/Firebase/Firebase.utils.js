@@ -3,7 +3,7 @@ import {
   getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection,getDocs} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyCZJQ_bgIuTe8m-zy75XfZBclxGo1gTAng",
@@ -68,12 +68,6 @@ export const addImageLinktoDb = async (imageDoc) => {
   const createdAt = new Date();
   const likes = 0, dislikes = 0;
   try {
-    // const docRef = await addDoc(collection(db, `images`), {
-    //   ...imageDoc,
-    //   createdAt,
-    //   likes,
-    //   dislikes,
-    // });
     const {imageUrl,userId,category}=imageDoc;
     const imageDocRef = doc(db, "images", category);
     const imageSnapshot=await getDoc(imageDocRef);
@@ -106,11 +100,6 @@ export const addImageLinktoDb = async (imageDoc) => {
       })
       console.log("image exists");
     }
-    // db.collection('images').doc(category).update({
-    //   array:app.firestore.FieldValue.arrayUnion({imageObj})
-    // })
-
-    // console.log("Document written with ID: ", docRef.id);
     alert("Added the image to your DB")
     const userDocRef = doc(db, "users", userId);
     await getUserData(userId).then((res)=>{
@@ -123,6 +112,20 @@ export const addImageLinktoDb = async (imageDoc) => {
     console.error("Error adding document: ", e);
   }
 }
+
+export const getCategoriesAndDocument=async()=>{
+  const collectionRef=collection(db,'images');
+  const alldocs=await getDocs(collectionRef);
+  let categoryMap=[];
+  alldocs.forEach((doc)=>{
+    // console.log( doc.id, doc.data().arr);
+    // categoryMap.set(doc.id,doc.data().arr)
+    categoryMap=[...categoryMap,{category:doc.id,arr:doc.data().arr}];
+
+  })
+  return categoryMap;
+}
+
 export const setProfileImageHandler=async(currentUser,profileImageLink)=>{
   console.log("function called");
   const uid=currentUser.uid;

@@ -49,21 +49,21 @@ const UserProfile = () => {
           {/* <div className="collections-container"> */}
           <h1>Your Collections:</h1>
           {userInfo.collections.length ? (
-            <Carousel userInfo={userInfo}/>
+            <Carousel userInfo={userInfo} />
           ) : (
             <h1>No collections</h1>
           )}
 
           <div className="liked-wallpapers-container">
             {userInfo.likedWallpapers.length ? (
-              <LikedWallpapers userInfo={userInfo}/>
+              <LikedWallpapers userInfo={userInfo} />
             ) : (
               <div>No liked Wallpapers</div>
             )}
           </div>
           <div className="uploaded Wallpapers">
             {userInfo.myWallpapers.length ? (
-              <UploadedWallpaperProfile userInfo={userInfo}/>
+              <UploadedWallpaperProfile userInfo={userInfo} />
             ) : (
               <div>No wallpapers uploaded</div>
             )}
@@ -86,19 +86,27 @@ const UserProfile = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <i class="fa-brands fa-instagram"></i>
+                <i className="fa-brands fa-instagram"></i>
               </a>
             ) : (
               <div>No InstagramId set</div>
             )}
           </div>
           <div className="profile-editables">
-            <Link to="uploadWallpaper" className="btn btn-warning">Upload Wallpaper</Link>
-            <Link to="edit-profile" className="btn btn-info">Edit Profile</Link>
+            <Link to="uploadWallpaper" className="btn btn-warning">
+              Upload Wallpaper
+            </Link>
+            <Link to="edit-profile" className="btn btn-info">
+              Edit Profile
+            </Link>
           </div>
         </div>
       ) : (
-        <h1>Loading....</h1>
+        <div className="text-center  align-content-center">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
       )}
     </>
   );

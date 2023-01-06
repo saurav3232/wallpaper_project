@@ -8,7 +8,7 @@ const NavigationBar=()=>  {
   const {currentUser}=useContext(UserContext);
   return (
     <>
-    <nav className="navbar navbar-expand-lg bg-primary">  
+    <nav className="navbar navbar-expand-lg navbar-dark bg-success shadow-5-strong">  
     <div className="container-fluid">
         <NavLink className="navbar-brand" to="/">Wallpaper Project</NavLink>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,10 +23,6 @@ const NavigationBar=()=>  {
             <NavLink className="nav-link active" to="/user">My Profile</NavLink>
             </li>
         </ul>
-        <form className="d-flex" role="search">
-            <input className="form-control me-2" type="search" placeholder="Search Wallpapers" aria-label="Search"/>
-            <button className="btn btn-outline-success bg-success" type="submit">Search</button>
-        </form>
         </div>
     </div>
     </nav>
