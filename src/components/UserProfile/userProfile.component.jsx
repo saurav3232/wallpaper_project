@@ -7,13 +7,13 @@ import Carousel from "../carousel/carousel.component";
 import LikedWallpapers from "../likedWallpapers/likedWallpapers.component";
 import UploadedWallpaperProfile from "../uploadedWallpaperProfile/UploadedWallpaperProfile.component";
 const UserProfile = () => {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser} = useContext(UserContext);
   const [isLoading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   console.log(currentUser);
   useEffect(() => {
     getUserData(currentUser.uid).then((res) => {
-      console.log(res);
+      // console.log(res);
       setUserInfo(res);
       setLoading(false);
     });

@@ -1,9 +1,22 @@
 import { initializeApp } from "firebase/app";
 import {
-  getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, signOut, onAuthStateChanged
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection,getDocs} from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyCZJQ_bgIuTe8m-zy75XfZBclxGo1gTAng",
@@ -26,7 +39,10 @@ export const signInWithGooglePopup = () => {
 };
 
 export const db = getFirestore();
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation = {}
+) => {
   if (!userAuth) return;
   const userDocRef = doc(db, "users", userAuth.uid);
 
@@ -37,11 +53,12 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     const createdAt = new Date();
     const collections = [];
     const likedWallpapers = [];
+    const dislikedWallpapers = [];
     const myWallpapers = [];
     const following = [];
     const followedBy = [];
     const views = 0;
-    const profileImage="";
+    const profileImage = "";
     try {
       await setDoc(userDocRef, {
         displayName,
@@ -49,14 +66,15 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
         createdAt,
         collections,
         likedWallpapers,
+        dislikedWallpapers,
         myWallpapers,
         following,
         followedBy,
         views,
         profileImage,
-        facebookId:"",
-        instagramId:"",
-        ...additionalInformation
+        facebookId: "",
+        instagramId: "",
+        ...additionalInformation,
       });
     } catch (error) {
       console.log("error creating the user", error.message);
@@ -66,115 +84,363 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
 };
 export const addImageLinktoDb = async (imageDoc) => {
   const createdAt = new Date();
-  const likes = 0, dislikes = 0;
+  const likes = 0,
+    dislikes = 0;
   try {
-    const {imageUrl,userId,category}=imageDoc;
+    const { imageUrl, userId, category } = imageDoc;
     const imageDocRef = doc(db, "images", category);
-    const imageSnapshot=await getDoc(imageDocRef);
-    const imageObj={
+    const imageSnapshot = await getDoc(imageDocRef);
+    const imageObj = {
       ...imageDoc,
       createdAt,
       likes,
       dislikes,
-    }
-    const obj={
-      arr:[]
     };
-    if(!imageSnapshot.exists())
-    {
-      await setDoc(imageDocRef,obj);
-      await getDoc(doc(db, "images", category)).then((res)=>{
-        updateDoc(imageDocRef,{
-          arr:[...res.data().arr,imageObj]
-        })
+    const obj = {
+      arr: [],
+    };
+    if (!imageSnapshot.exists()) {
+      await setDoc(imageDocRef, obj);
+      await getDoc(doc(db, "images", category)).then((res) => {
+        updateDoc(imageDocRef, {
+          arr: [...res.data().arr, imageObj],
+        });
         console.log(res.data());
-      })
-    }
-    else
-    {
+      });
+    } else {
       // await setDoc(imageDocRef,{...imageSnapshot.data(),imageObj});
       console.log(imageSnapshot.data().arr);
-      const newArr=[...imageSnapshot.data().arr,imageObj];
-      await updateDoc(imageDocRef,{
-        arr:newArr
-      })
+      const newArr = [...imageSnapshot.data().arr, imageObj];
+      await updateDoc(imageDocRef, {
+        arr: newArr,
+      });
       console.log("image exists");
     }
-    alert("Added the image to your DB")
+    alert("Added the image to your DB");
     const userDocRef = doc(db, "users", userId);
-    await getUserData(userId).then((res)=>{
-       updateDoc(userDocRef,{
-        myWallpapers:[...res.myWallpapers,imageUrl]
-       })
-    })
-
+    await getUserData(userId).then((res) => {
+      updateDoc(userDocRef, {
+        myWallpapers: [...res.myWallpapers, imageUrl],
+      });
+    });
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-}
+};
 
-export const getCategoriesAndDocument=async()=>{
-  const collectionRef=collection(db,'images');
-  const alldocs=await getDocs(collectionRef);
-  let categoryMap=[];
-  alldocs.forEach((doc)=>{
+export const getCategoriesAndDocument = async () => {
+  const collectionRef = collection(db, "images");
+  const alldocs = await getDocs(collectionRef);
+  let categoryMap = [];
+  alldocs.forEach((doc) => {
     // console.log( doc.id, doc.data().arr);
     // categoryMap.set(doc.id,doc.data().arr)
-    categoryMap=[...categoryMap,{category:doc.id,arr:doc.data().arr}];
-
-  })
+    categoryMap = [...categoryMap, { category: doc.id, arr: doc.data().arr }];
+  });
   return categoryMap;
-}
+};
 
-export const setProfileImageHandler=async(currentUser,profileImageLink)=>{
+export const setProfileImageHandler = async (currentUser, profileImageLink) => {
   console.log("function called");
-  const uid=currentUser.uid;
+  const uid = currentUser.uid;
   const userDocRef = doc(db, "users", uid);
   try {
-    await updateDoc(userDocRef,{
-      profileImage:profileImageLink
-    })
+    await updateDoc(userDocRef, {
+      profileImage: profileImageLink,
+    });
   } catch (error) {
     console.log(error);
   }
-}
-export const changeInstagramLink=async(currentUser,InstagramLink)=>{
-  const uid=currentUser.uid;
+};
+export const changeInstagramLink = async (currentUser, InstagramLink) => {
+  const uid = currentUser.uid;
   const userDocRef = doc(db, "users", uid);
   try {
-    await updateDoc(userDocRef,{
-      instagramId:InstagramLink
-    })
+    await updateDoc(userDocRef, {
+      instagramId: InstagramLink,
+    });
   } catch (error) {
     console.log(error);
   }
-}
-export const changeFacebookLink=async(currentUser,FacebookLink)=>{
-  const uid=currentUser.uid;
+};
+export const changeFacebookLink = async (currentUser, FacebookLink) => {
+  const uid = currentUser.uid;
   const userDocRef = doc(db, "users", uid);
   try {
-    await updateDoc(userDocRef,{
-      facebookId:FacebookLink
-    })
+    await updateDoc(userDocRef, {
+      facebookId: FacebookLink,
+    });
   } catch (error) {
     console.log(error);
   }
-}
-export const changeDisplayName=async(currentUser,name)=>{
-  const uid=currentUser.uid;
+};
+export const changeDisplayName = async (currentUser, name) => {
+  const uid = currentUser.uid;
   const userDocRef = doc(db, "users", uid);
   try {
-    await updateDoc(userDocRef,{
-      displayName:name
-    })
+    await updateDoc(userDocRef, {
+      displayName: name,
+    });
   } catch (error) {
     console.log(error);
   }
-}
-export const getUserData=async(uid)=>{
+};
+export const getUserData = async (uid) => {
   const snapshot = await getDoc(doc(db, "users", uid));
   return snapshot.data();
+};
+export const checkLikedImage = async (currentUser, imageUrl) => {
+  if (currentUser === null) {
+    return false;
+  }
+  let flag = false;
+  await getUserData(currentUser.uid).then((res) => {
+    if (res.likedWallpapers.includes(imageUrl)) {
+      flag = true;
+    }
+  });
+  // console.log(flag)
+  return flag;
+};
+
+export const checkdisLikedImage = async (currentUser, imageUrl) => {
+  if (currentUser === null) {
+    return false;
+  }
+  let flag = false;
+  await getUserData(currentUser.uid).then((res) => {
+    if (res.dislikedWallpapers.includes(imageUrl)) {
+      flag = true;
+    }
+  });
+  // console.log(flag)
+  return flag;
+};
+
+export const getImageInfo = async (imageObj) => {
+  const { category } = imageObj;
+  const snapShot = await getDoc(doc(db, "images", category));
+  return snapShot.data();
+};
+
+export const toggleLikeValueDb = async (currentUser, imageObj, likevalue) => {
+  const uid = currentUser.uid;
+  const userDocRef = doc(db, "users", uid);
+  likevalue = !likevalue;
+  const imageUrl = imageObj.imageUrl;
+  if (likevalue) {
+    // console.log("first part")
+    try {
+      await getUserData(uid).then((res) => {
+        updateDoc(userDocRef, {
+          likedWallpapers: [...res.likedWallpapers, imageUrl],
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    // console.log("Second part")
+    await getUserData(uid).then((res) => {
+      // console.log(res);
+      const index = res.likedWallpapers.indexOf(imageUrl);
+      res.likedWallpapers.splice(index, 1);
+      updateDoc(userDocRef, {
+        likedWallpapers: res.likedWallpapers,
+      });
+    });
+  }
+  await updateLikeCountImage(imageObj, likevalue);
+};
+
+export const updateLikeCountImage = async (imageObj, likeVal) => {
+  // console.log(likeVal);
+  const { category, imageUrl } = imageObj;
+  const DocRef = doc(db, "images", category);
+  await getImageInfo(imageObj).then((res) => {
+    res.arr.map((obj, idx) =>
+      obj.imageUrl === imageUrl
+        ? likeVal
+          ? (obj.likes = obj.likes + 1)
+          : (obj.likes = obj.likes - 1)
+        : obj.likes
+    );
+    updateDoc(DocRef, {
+      arr: res.arr,
+    });
+  });
+};
+
+export const toggledisLikeValueDb = async (
+  currentUser,
+  imageObj,
+  dislikevalue
+) => {
+  const uid = currentUser.uid;
+  const userDocRef = doc(db, "users", uid);
+  dislikevalue = !dislikevalue;
+  const imageUrl = imageObj.imageUrl;
+  if (dislikevalue) {
+    // console.log("first part")
+    try {
+      await getUserData(uid).then((res) => {
+        updateDoc(userDocRef, {
+          dislikedWallpapers: [...res.dislikedWallpapers, imageUrl],
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    // console.log("Second part")
+    await getUserData(uid).then((res) => {
+      // console.log(res);
+      const index = res.likedWallpapers.indexOf(imageUrl);
+      res.dislikedWallpapers.splice(index, 1);
+      updateDoc(userDocRef, {
+        dislikedWallpapers: res.dislikedWallpapers,
+      });
+    });
+  }
+  await updatedisLikeCountImage(imageObj, dislikevalue);
+};
+
+export const updatedisLikeCountImage = async (imageObj, dislikeVal) => {
+  // console.log(dislikeVal);
+  const { category, imageUrl } = imageObj;
+  const DocRef = doc(db, "images", category);
+  await getImageInfo(imageObj).then((res) => {
+    res.arr.map((obj, idx) =>
+      obj.imageUrl === imageUrl
+        ? dislikeVal
+          ? (obj.dislikes = obj.dislikes + 1)
+          : (obj.dislikes = obj.dislikes - 1)
+        : obj.dislikes
+    );
+    updateDoc(DocRef, {
+      arr: res.arr,
+    });
+  });
+};
+
+export const checkImageInCollections = async (uid, imageUrl) => {
+  // console.log("Inside checkCollection Image");
+  var flag=false;
+  const userSnapshot = await getUserData(uid);
+  userSnapshot.collections.forEach((collectionObj) => {
+    if (collectionObj.arr.includes(imageUrl)) {
+      flag=true;
+    }
+  });
+  return flag;
+};
+
+export const updateCollections = async (uid, imageUrl, collectionTitle) => {
+  const UserDocRef = doc(db, "users", uid);
+  const userSnapshot = await getUserData(uid);
+  var flag = false;
+  userSnapshot.collections.forEach((collectionObj) => {
+    if (collectionObj.title === collectionTitle) {
+      if (!collectionObj.arr.includes(imageUrl)) {
+        collectionObj.arr.push(imageUrl);
+      }
+      flag = true;
+    }
+  });
+  if (!flag) {
+    const newObj = {
+      title: collectionTitle,
+      arr: [imageUrl],
+    };
+    await updateDoc(UserDocRef, {
+      collections: [...userSnapshot.collections, newObj],
+    });
+  } else {
+    await updateDoc(UserDocRef, {
+      collections: [...userSnapshot.collections],
+    });
+  }
+};
+
+export const removeFromCollection=async(uid,imageUrl)=>{
+  const UserDocRef = doc(db, "users", uid);
+  const userSnapshot = await getUserData(uid);
+  const emptyCollections=[];
+  userSnapshot.collections.forEach((collectionObj)=>{
+    if(collectionObj.arr.includes(imageUrl))
+    {
+      // console.log("include imageUrl")
+      const idx=collectionObj.arr.indexOf(imageUrl);
+      collectionObj.arr.splice(idx,1)
+    }
+    if(collectionObj.arr.length===0)
+    {
+      const i=userSnapshot.collections.indexOf(collectionObj);
+      emptyCollections.push(i);
+    }
+  })
+  emptyCollections.forEach((idx)=>{
+    userSnapshot.collections.splice(idx,1);
+  })
+  await updateDoc(UserDocRef,{
+    collections:[...userSnapshot.collections]
+  })
+  
 }
+
+export const addToFollowedBy=async(currentUserUid,targetUid)=>{
+  const UserDocRef = doc(db, "users", targetUid);
+  const userSnapShot=await getUserData(targetUid);
+  userSnapShot.followedBy.push(currentUserUid);
+  await updateDoc(UserDocRef,{
+    followedBy:[...userSnapShot.followedBy]
+  })
+}
+
+export const removeFromFollwedBy=async(currentUserUid,targetUid)=>{
+  const UserDocRef = doc(db, "users", targetUid);
+  const userSnapShot=await getUserData(targetUid);
+  var idx;
+  userSnapShot.followedBy.forEach((user,id)=>{
+    if(currentUserUid===user)
+    {
+      idx=id;
+    }
+  })
+  userSnapShot.followedBy.splice(idx,1);
+  // console.log(userSnapShot.following);
+  await updateDoc(UserDocRef,{
+    followedBy:[...userSnapShot.followedBy]
+  })
+}
+
+
+export const addToFollowingHandler=async(currentUserUid,targetUid)=>{
+  const UserDocRef = doc(db, "users", currentUserUid);
+  const userSnapShot=await getUserData(currentUserUid);
+  userSnapShot.following.push(targetUid);
+  await updateDoc(UserDocRef,{
+    following:[...userSnapShot.following]
+  })
+  await addToFollowedBy(currentUserUid,targetUid);
+}
+export const removeFromFollowingHandler=async(currentUserUid,targetUid)=>{
+  const UserDocRef = doc(db, "users", currentUserUid);
+  const userSnapShot=await getUserData(currentUserUid);
+  var idx;
+  userSnapShot.following.forEach((user,id)=>{
+    if(targetUid===user)
+    {
+      idx=id;
+    }
+  })
+  userSnapShot.following.splice(idx,1);
+  await updateDoc(UserDocRef,{
+    following:[...userSnapShot.following]
+  })
+  await removeFromFollwedBy(currentUserUid,targetUid);
+}
+
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
@@ -186,7 +452,7 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 };
 export const signOutUser = async () => {
   await signOut(auth);
-}
+};
 export const onAuthStateChangeListener = (callback) => {
   onAuthStateChanged(auth, callback);
-}
+};
