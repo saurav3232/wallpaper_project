@@ -11,6 +11,7 @@ import { toggleLikeValueDb } from "../../utils/Firebase/Firebase.utils";
 import { checkdisLikedImage } from "../../utils/Firebase/Firebase.utils";
 import { toggledisLikeValueDb } from "../../utils/Firebase/Firebase.utils";
 import { AddToCollection } from "../../addtoCollection/addtocollection.component";
+import { addNotificationOnLike } from "../../utils/Firebase/Firebase.utils";
 import { Follow } from "../follow/follow.component";
 const Image = (props) => {
   // eslint-disable-next-line
@@ -29,6 +30,10 @@ const Image = (props) => {
       set_toggle_disLikes(!toggle_dislikes);
     }
     await toggleLikeValueDb(currentUser, catObj, toggle_likes);
+    if(!toggle_likes)
+    {
+      await addNotificationOnLike(currentUser.uid,catObj.userId,catObj.imageUrl);
+    }
     set_toggle_Likes(!toggle_likes);
   };
   const ondislikeclickHandler = async () => {

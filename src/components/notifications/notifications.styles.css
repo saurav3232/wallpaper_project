@@ -1,0 +1,14 @@
+#btn-dropdown:hover{
+    background-color:transparent!important;
+}
+.dropdown-toggle::after {
+    display: none !important; 
+  }
+.dropdown-item{
+    display: flex!important;
+    align-items: center;
+    justify-content: space-between!important;
+}
+.dropdown-Subpart{
+    padding: 5px;
+}

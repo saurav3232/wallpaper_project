@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { v4 } from "uuid";
 import {
   getAuth,
   signInWithPopup,
@@ -388,18 +389,45 @@ export const removeFromCollection=async(uid,imageUrl)=>{
   
 }
 
+export const addNotificationOnLike=async(currentUserUid,createrUid,imageUrl)=>{
+  const createrDoc=doc(db,"users",createrUid);
+  const createrSnapShot=await getUserData(createrUid);
+  const userSnapShot=await getUserData(currentUserUid);
+  const notificationObj={
+    message:`${userSnapShot.displayName} Liked Your Image at : ${imageUrl}`,
+    notificationId:v4(),
+    read:false
+  }
+  await updateDoc(createrDoc,{
+    notifications:[...createrSnapShot.notifications,notificationObj]
+  })
+}
+
 export const addToFollowedBy=async(currentUserUid,targetUid)=>{
   const UserDocRef = doc(db, "users", targetUid);
   const userSnapShot=await getUserData(targetUid);
+  const follower=await getUserData(currentUserUid);
+  const notificationObj={
+    message:`${follower.displayName} Followed You`,
+    notificationId:v4(),
+    read:false
+  }
   userSnapShot.followedBy.push(currentUserUid);
   await updateDoc(UserDocRef,{
-    followedBy:[...userSnapShot.followedBy]
+    followedBy:[...userSnapShot.followedBy],
+    notifications:[...userSnapShot.notifications,notificationObj]
   })
 }
 
 export const removeFromFollwedBy=async(currentUserUid,targetUid)=>{
   const UserDocRef = doc(db, "users", targetUid);
   const userSnapShot=await getUserData(targetUid);
+  const follower=await getUserData(currentUserUid);
+  const notificationObj={
+    message:`${follower.displayName} UnFollowed You`,
+    notificationId:v4(),
+    read:false
+  }
   var idx;
   userSnapShot.followedBy.forEach((user,id)=>{
     if(currentUserUid===user)
@@ -410,7 +438,8 @@ export const removeFromFollwedBy=async(currentUserUid,targetUid)=>{
   userSnapShot.followedBy.splice(idx,1);
   // console.log(userSnapShot.following);
   await updateDoc(UserDocRef,{
-    followedBy:[...userSnapShot.followedBy]
+    followedBy:[...userSnapShot.followedBy],
+    notifications:[...userSnapShot.notifications,notificationObj]
   })
 }
 
@@ -440,6 +469,40 @@ export const removeFromFollowingHandler=async(currentUserUid,targetUid)=>{
   })
   await removeFromFollwedBy(currentUserUid,targetUid);
 }
+
+
+
+export const removeFromUnreadHandler=async (notification,setNotificationArr,uid,unReadMessages)=>{
+  const UserDocRef = doc(db, "users", uid);
+  const userSnapShot=await getUserData(uid);
+  userSnapShot.notifications.forEach((notifi,idx)=>{
+    if(notifi.message ===notification.message  && notifi.notificationId===notification.notificationId)
+    {
+      notifi.read=true;
+      unReadMessages.splice(idx,1);
+    }
+  })
+  // console.log(unReadMessages)
+  // userSnapShot.notifications.splice(id,1);
+  await updateDoc(UserDocRef,{
+    notifications:userSnapShot.notifications
+  })
+  setNotificationArr(userSnapShot.notifications);
+  // alert("Remove from Unread")
+  return unReadMessages;
+}
+
+
+
+export const clearNotifications=async (uid,setNotificationArr)=>{
+  const UserDocRef = doc(db, "users", uid);
+  await updateDoc(UserDocRef,{
+    notifications:[]
+  })
+  setNotificationArr([]);
+}
+
+
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
