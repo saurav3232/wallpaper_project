@@ -41,7 +41,7 @@ const UserProfile = () => {
                 <div>Views</div>
               </div>
               <div className="profile-header-followers">
-                {userInfo.following.length}
+                {userInfo.followedBy.length}
                 <div>Followers</div>
               </div>
             </div>

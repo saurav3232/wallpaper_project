@@ -28,11 +28,23 @@ export const Follow = (props) => {
         alert("Cannot follow yourself");
         return;
     }
-    await addToFollowingHandler(currentUser.uid,catObj.userId);
+    const userSnapShot=await getUserData(currentUser.uid);
+    if(userSnapShot.following.includes(catObj.userId))
+    {
+      alert("Already following, Please refresh to see changes");
+      return;
+    }
+    await addToFollowingHandler(currentUser.uid,catObj.userId,userSnapShot);
     setToggleFollow(true);
   }
   const onRemoveFromFollow=async()=>{
-    await removeFromFollowingHandler(currentUser.uid,catObj.userId);
+    const userSnapShot=await getUserData(currentUser.uid);
+    if(!userSnapShot.following.includes(catObj.userId))
+    {
+      alert("Already unfollowed, Please refresh to see changes");
+      return;
+    }
+    await removeFromFollowingHandler(currentUser.uid,catObj.userId,userSnapShot);
     setToggleFollow(false);
   }
   return (

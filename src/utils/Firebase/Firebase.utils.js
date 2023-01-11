@@ -444,18 +444,16 @@ export const removeFromFollwedBy=async(currentUserUid,targetUid)=>{
 }
 
 
-export const addToFollowingHandler=async(currentUserUid,targetUid)=>{
+export const addToFollowingHandler=async(currentUserUid,targetUid,userSnapShot)=>{
   const UserDocRef = doc(db, "users", currentUserUid);
-  const userSnapShot=await getUserData(currentUserUid);
   userSnapShot.following.push(targetUid);
   await updateDoc(UserDocRef,{
     following:[...userSnapShot.following]
   })
   await addToFollowedBy(currentUserUid,targetUid);
 }
-export const removeFromFollowingHandler=async(currentUserUid,targetUid)=>{
+export const removeFromFollowingHandler=async(currentUserUid,targetUid,userSnapShot)=>{
   const UserDocRef = doc(db, "users", currentUserUid);
-  const userSnapShot=await getUserData(currentUserUid);
   var idx;
   userSnapShot.following.forEach((user,id)=>{
     if(targetUid===user)
