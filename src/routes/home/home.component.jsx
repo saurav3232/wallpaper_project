@@ -17,7 +17,7 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     maxWidth: "100vw",
-    backgroundColor:"rgb(129, 129, 234)"
+    backgroundColor:"rgb(129, 129, 234)",
   },
 };
 const Home = () => {
@@ -60,8 +60,8 @@ const Home = () => {
         </Modal>
       </div>
       {!isLoading ? (
-        <>
-          <Categories categoryMap={categories} />
+        < >
+          <Categories categoryMap={categories}  />
         </>
       ) : (
         <div className="text-center  align-content-center">

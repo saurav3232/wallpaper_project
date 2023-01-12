@@ -501,6 +501,25 @@ export const clearNotifications=async (uid,setNotificationArr)=>{
 }
 
 
+export const collectImageObjects=async(uid)=>{
+  var arr=[];
+  const categoryMap=await getCategoriesAndDocument();
+  // console.log(categoryMap);
+  categoryMap.forEach((category,idx)=>{
+    category.arr.forEach((cat,idx)=>{
+      if(cat.userId===uid)
+      {
+        arr.push(cat);
+      }
+    })
+  })
+  console.log(arr);
+  return arr;
+}
+
+
+
+
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;

@@ -19,6 +19,7 @@ body {
 }
 .profile-header-extra{
     display:flex;
+    flex-flow: wrap;
     justify-content: space-evenly;
 
 }

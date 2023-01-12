@@ -14,7 +14,7 @@ export const Categories = (props) => {
     <div >
       {/* {console.log("inside Categories")} */}
       {categoriesMap.map((cat, idx) => (
-        <Fragment key={idx}>
+        <Fragment key={idx} >
           <h3>{cat.category}</h3>
             <ImageGrid categoryArray={cat.arr} />
         </Fragment>

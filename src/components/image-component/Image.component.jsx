@@ -5,6 +5,7 @@ import {
   checkLikedImage,
   getUserData,
 } from "../../utils/Firebase/Firebase.utils";
+import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/user.context";
 import { toggleLikeValueDb } from "../../utils/Firebase/Firebase.utils";
@@ -30,9 +31,12 @@ const Image = (props) => {
       set_toggle_disLikes(!toggle_dislikes);
     }
     await toggleLikeValueDb(currentUser, catObj, toggle_likes);
-    if(!toggle_likes)
-    {
-      await addNotificationOnLike(currentUser.uid,catObj.userId,catObj.imageUrl);
+    if (!toggle_likes) {
+      await addNotificationOnLike(
+        currentUser.uid,
+        catObj.userId,
+        catObj.imageUrl
+      );
     }
     set_toggle_Likes(!toggle_likes);
   };
@@ -50,7 +54,7 @@ const Image = (props) => {
   };
   useEffect(() => {
     const userData = async () => {
-      const createrSnapShot=await getUserData(catObj.userId)
+      const createrSnapShot = await getUserData(catObj.userId);
       setCreater(createrSnapShot);
     };
     userData();
@@ -75,22 +79,25 @@ const Image = (props) => {
     checkdisLike();
     // eslint-disable-next-line
   }, []);
+
   return (
     <>
       {creater !== null ? (
         <div className="image-container">
           <div className="middle2">
             <div className="text">
-              <div className="fpart">
-                <img
-                  src={creater.profileImage}
-                  alt="Img"
-                  style={{ width: "50px", height: "50px" }}
-                  className="profile-mini-img"
-                />
-                <div className="profile-mini-name">{creater.displayName}</div>
-              </div>
-              <Follow catObj={catObj}/>
+              <Link style={{textDecoration:"none"}} to={{pathname: `/creater/${catObj.userId}`}} onClick={()=>console.log("Page refreshed")}>
+                <div className="fpart">
+                  <img
+                    src={creater.profileImage}
+                    alt="Img"
+                    style={{ width: "50px", height: "50px" }}
+                    className="profile-mini-img"
+                  />
+                  <div className="profile-mini-name" style={{color:"white"}}>{creater.displayName}</div>
+                </div>
+              </Link>
+              <Follow createrId={catObj.userId} />
             </div>
           </div>
           <img src={catObj.imageUrl} alt="Avatar" className="image" />

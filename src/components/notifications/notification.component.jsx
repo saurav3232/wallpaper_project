@@ -36,10 +36,10 @@ export const Notifications = () => {
     await clearNotifications(currentUser.uid,setNotificationArr);
     setUnreadMessages([]);
   }
-  console.log(unReadMessages);
+  // console.log(unReadMessages);
   return (
     <>
-      {console.log("rendered")}
+      {/* {console.log("rendered")} */}
       {currentUser ? (
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">

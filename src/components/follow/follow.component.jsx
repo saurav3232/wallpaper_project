@@ -6,14 +6,14 @@ import { addToFollowingHandler } from "../../utils/Firebase/Firebase.utils";
 import { removeFromFollowingHandler } from "../../utils/Firebase/Firebase.utils";
 export const Follow = (props) => {
   const { currentUser } = useContext(UserContext);
-  const catObj = props.catObj;
+  const createrId = props.createrId;
   const [toggleFollow, setToggleFollow] = useState(false);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchUserData = async () => {
       const userSnapShot = await getUserData(currentUser.uid);
     //   console.log(userSnapShot.following);
-      if (userSnapShot.following.includes(catObj.userId)) {
+      if (userSnapShot.following.includes(createrId)) {
         // console.log(true);
         setToggleFollow(true);
       }
@@ -23,28 +23,29 @@ export const Follow = (props) => {
      // eslint-disable-next-line 
   }, []);
   const onAddToFollow=async()=>{
-    if(currentUser.uid===catObj.userId)
+    if(currentUser.uid===createrId)
     {
         alert("Cannot follow yourself");
         return;
     }
     const userSnapShot=await getUserData(currentUser.uid);
-    if(userSnapShot.following.includes(catObj.userId))
+    if(userSnapShot.following.includes(createrId))
     {
       alert("Already following, Please refresh to see changes");
       return;
     }
-    await addToFollowingHandler(currentUser.uid,catObj.userId,userSnapShot);
+    // console.log(catObj);
+    await addToFollowingHandler(currentUser.uid,createrId,userSnapShot);
     setToggleFollow(true);
   }
   const onRemoveFromFollow=async()=>{
     const userSnapShot=await getUserData(currentUser.uid);
-    if(!userSnapShot.following.includes(catObj.userId))
+    if(!userSnapShot.following.includes(createrId))
     {
       alert("Already unfollowed, Please refresh to see changes");
       return;
     }
-    await removeFromFollowingHandler(currentUser.uid,catObj.userId,userSnapShot);
+    await removeFromFollowingHandler(currentUser.uid,createrId,userSnapShot);
     setToggleFollow(false);
   }
   return (

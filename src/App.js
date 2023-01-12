@@ -8,13 +8,15 @@ import UploadWallpaper from './components/UploadWallpapers/uploadWallpaper.compo
 import SignUp from './components/SignUp/signUp.component';
 import { EditProfile } from './components/edit-profile/edit-profile.component';
 import { RequireAuth } from './components/RequireAuth/RequireAuth.component';
+import CreaterProfile from './components/CreaterProfile/createrProfile.component';
 function App() {
   return (
       <Routes>
-       <Route path="/" element={<NavigationBar />}>
+       <Route path="/" element={<NavigationBar />}> 
         <Route index element={<Home />}/>
         <Route path="signin" element={<Authentication />}/>
         <Route path="user" element={<RequireAuth><UserProfile /></RequireAuth>}/>
+        <Route path="creater/:userId" element={<CreaterProfile />}/>
         <Route path="user/uploadWallpaper" element={<RequireAuth><UploadWallpaper /></RequireAuth>}/>
         <Route path="user/edit-profile" element={<RequireAuth><EditProfile /></RequireAuth>}/>
         <Route path="signup" element={<SignUp />}/>

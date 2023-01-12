@@ -11,7 +11,7 @@ const ImageGrid = (props) => {
         {categoryArray.map((catObj, idx) => {
           return (
             <Fragment key={idx}>
-              <Image catObj={catObj} className="col-items" />
+              <Image catObj={catObj}  />
             </Fragment>
           );
         })}
