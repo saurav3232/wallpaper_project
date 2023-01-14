@@ -7,16 +7,19 @@ import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./context/user.context";
 import { CollectionsProvider } from "./context/collections.context";
 import { NotificationProvider } from "./context/notification.context";
+import { MessageProvider } from "./context/message.context";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
   <UserProvider>
     <NotificationProvider>
-      <CollectionsProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </CollectionsProvider>
+      <MessageProvider>
+        <CollectionsProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </CollectionsProvider>
+      </MessageProvider>
     </NotificationProvider>
   </UserProvider>
   // </React.StrictMode>

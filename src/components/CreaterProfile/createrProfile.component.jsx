@@ -1,7 +1,7 @@
-import "../UserProfile/userProfile.styles.css"
+import "../UserProfile/userProfile.styles.css";
 import { useParams } from "react-router-dom";
 import { getUserData } from "../../utils/Firebase/Firebase.utils";
-import {  useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Follow } from "../follow/follow.component";
 import ImageGrid from "../ImageGrid/imageGrid.component";
 import { collectImageObjects } from "../../utils/Firebase/Firebase.utils";
@@ -9,21 +9,24 @@ import { useContext } from "react";
 import { CollectionsContext } from "../../context/collections.context";
 import CollectionsPopUp from "../../components/collections-popUp/collections-popUp.component";
 import Modal from "react-modal";
+import { UserContext } from "../../context/user.context";
+import { Link } from "react-router-dom";
 const CreaterProfile = () => {
   const [isLoading, setLoading] = useState(true);
   const [creater, setCreater] = useState(null);
-  const [categoryArray,setCategoryArray]=useState(null);
-  const params=useParams();
-  const { togglePopUpVal, setTogglePopUpVal} =useContext(CollectionsContext);
-  const createrId=params.userId;
+  const [categoryArray, setCategoryArray] = useState(null);
+  const params = useParams();
+  const { togglePopUpVal, setTogglePopUpVal } = useContext(CollectionsContext);
+  const createrId = params.userId;
+  const { currentUser } = useContext(UserContext);
   // console.log(createrId);
   useEffect(() => {
-    const fetchCreaterData=async()=>{
-        const data=await getUserData(createrId);
-        setCategoryArray(await collectImageObjects(createrId));
-        setCreater(data);
-        setLoading(false);
-    }
+    const fetchCreaterData = async () => {
+      const data = await getUserData(createrId);
+      setCategoryArray(await collectImageObjects(createrId));
+      setCreater(data);
+      setLoading(false);
+    };
     fetchCreaterData();
     // eslint-disable-next-line
   }, []);
@@ -37,7 +40,7 @@ const CreaterProfile = () => {
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
       maxWidth: "100vw",
-      backgroundColor:"rgb(129, 129, 234)"
+      backgroundColor: "rgb(129, 129, 234)",
     },
   };
   return (
@@ -55,7 +58,7 @@ const CreaterProfile = () => {
             <div className="profile-header-display-name">
               {creater.displayName}
             </div>
-            <Follow createrId={createrId}/>
+            <Follow createrId={createrId} />
             <div className="profile-header-extra">
               <div className="profile-header-views">
                 {creater.views}
@@ -63,27 +66,38 @@ const CreaterProfile = () => {
               </div>
               <div className="profile-header-followers">
                 {creater.followedBy.length}
-                <div >Followers</div>
+                <div>Followers</div>
               </div>
-              <div style={{display:"flex",alignItems:"center"}}>
-                <button type="button" className="btn btn-info" >Message</button>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {!currentUser ? (
+                  <button type="button" className="btn btn-info" onClick={()=>alert("login to Continue")}>
+                    Message
+                  </button>
+                ) : (
+                  <Link to={{pathname: `/creater/${createrId}/message`}}>
+                  <button type="button" className="btn btn-info" creater={creater}>
+                    Message
+                  </button>
+
+                  </Link>
+                )}
               </div>
             </div>
           </div>
-        
+
           <div>
-        {/* {togglePopUpVal && <CollectionsPopUp/>} */}
-        <Modal
-          isOpen={togglePopUpVal}
-          onRequestClose={() => setTogglePopUpVal(!togglePopUpVal)}
-          style={customStyles}
-          ariaHideApp={false}
-        >
-          <CollectionsPopUp />
-        </Modal>
-      </div>
+            {/* {togglePopUpVal && <CollectionsPopUp/>} */}
+            <Modal
+              isOpen={togglePopUpVal}
+              onRequestClose={() => setTogglePopUpVal(!togglePopUpVal)}
+              style={customStyles}
+              ariaHideApp={false}
+            >
+              <CollectionsPopUp />
+            </Modal>
+          </div>
           <h1>Uploaded Wallpapers</h1>
-          <ImageGrid categoryArray={categoryArray}/>
+          <ImageGrid categoryArray={categoryArray} />
           <div className="profile-links">
             {creater.facebookId ? (
               <a

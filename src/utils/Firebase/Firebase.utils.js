@@ -17,6 +17,7 @@ import {
   updateDoc,
   collection,
   getDocs,
+  arrayUnion,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 const firebaseConfig = {
@@ -326,11 +327,11 @@ export const updatedisLikeCountImage = async (imageObj, dislikeVal) => {
 
 export const checkImageInCollections = async (uid, imageUrl) => {
   // console.log("Inside checkCollection Image");
-  var flag=false;
+  var flag = false;
   const userSnapshot = await getUserData(uid);
   userSnapshot.collections.forEach((collectionObj) => {
     if (collectionObj.arr.includes(imageUrl)) {
-      flag=true;
+      flag = true;
     }
   });
   return flag;
@@ -363,163 +364,197 @@ export const updateCollections = async (uid, imageUrl, collectionTitle) => {
   }
 };
 
-export const removeFromCollection=async(uid,imageUrl)=>{
+export const removeFromCollection = async (uid, imageUrl) => {
   const UserDocRef = doc(db, "users", uid);
   const userSnapshot = await getUserData(uid);
-  const emptyCollections=[];
-  userSnapshot.collections.forEach((collectionObj)=>{
-    if(collectionObj.arr.includes(imageUrl))
-    {
+  const emptyCollections = [];
+  userSnapshot.collections.forEach((collectionObj) => {
+    if (collectionObj.arr.includes(imageUrl)) {
       // console.log("include imageUrl")
-      const idx=collectionObj.arr.indexOf(imageUrl);
-      collectionObj.arr.splice(idx,1)
+      const idx = collectionObj.arr.indexOf(imageUrl);
+      collectionObj.arr.splice(idx, 1);
     }
-    if(collectionObj.arr.length===0)
-    {
-      const i=userSnapshot.collections.indexOf(collectionObj);
+    if (collectionObj.arr.length === 0) {
+      const i = userSnapshot.collections.indexOf(collectionObj);
       emptyCollections.push(i);
     }
-  })
-  emptyCollections.forEach((idx)=>{
-    userSnapshot.collections.splice(idx,1);
-  })
-  await updateDoc(UserDocRef,{
-    collections:[...userSnapshot.collections]
-  })
-  
-}
+  });
+  emptyCollections.forEach((idx) => {
+    userSnapshot.collections.splice(idx, 1);
+  });
+  await updateDoc(UserDocRef, {
+    collections: [...userSnapshot.collections],
+  });
+};
 
-export const addNotificationOnLike=async(currentUserUid,createrUid,imageUrl)=>{
-  const createrDoc=doc(db,"users",createrUid);
-  const createrSnapShot=await getUserData(createrUid);
-  const userSnapShot=await getUserData(currentUserUid);
-  const notificationObj={
-    message:`${userSnapShot.displayName} Liked Your Image at : ${imageUrl}`,
-    notificationId:v4(),
-    read:false
-  }
-  await updateDoc(createrDoc,{
-    notifications:[...createrSnapShot.notifications,notificationObj]
-  })
-}
+export const addNotificationOnLike = async (
+  currentUserUid,
+  createrUid,
+  imageUrl
+) => {
+  const createrDoc = doc(db, "users", createrUid);
+  const createrSnapShot = await getUserData(createrUid);
+  const userSnapShot = await getUserData(currentUserUid);
+  const notificationObj = {
+    message: `${userSnapShot.displayName} Liked Your Image at : ${imageUrl}`,
+    notificationId: v4(),
+    read: false,
+  };
+  await updateDoc(createrDoc, {
+    notifications: [...createrSnapShot.notifications, notificationObj],
+  });
+};
 
-export const addToFollowedBy=async(currentUserUid,targetUid)=>{
+export const addToFollowedBy = async (currentUserUid, targetUid) => {
   const UserDocRef = doc(db, "users", targetUid);
-  const userSnapShot=await getUserData(targetUid);
-  const follower=await getUserData(currentUserUid);
-  const notificationObj={
-    message:`${follower.displayName} Followed You`,
-    notificationId:v4(),
-    read:false
-  }
+  const userSnapShot = await getUserData(targetUid);
+  const follower = await getUserData(currentUserUid);
+  const notificationObj = {
+    message: `${follower.displayName} Followed You`,
+    notificationId: v4(),
+    read: false,
+  };
   userSnapShot.followedBy.push(currentUserUid);
-  await updateDoc(UserDocRef,{
-    followedBy:[...userSnapShot.followedBy],
-    notifications:[...userSnapShot.notifications,notificationObj]
-  })
-}
+  await updateDoc(UserDocRef, {
+    followedBy: [...userSnapShot.followedBy],
+    notifications: [...userSnapShot.notifications, notificationObj],
+  });
+};
 
-export const removeFromFollwedBy=async(currentUserUid,targetUid)=>{
+export const removeFromFollwedBy = async (currentUserUid, targetUid) => {
   const UserDocRef = doc(db, "users", targetUid);
-  const userSnapShot=await getUserData(targetUid);
-  const follower=await getUserData(currentUserUid);
-  const notificationObj={
-    message:`${follower.displayName} UnFollowed You`,
-    notificationId:v4(),
-    read:false
-  }
+  const userSnapShot = await getUserData(targetUid);
+  const follower = await getUserData(currentUserUid);
+  const notificationObj = {
+    message: `${follower.displayName} UnFollowed You`,
+    notificationId: v4(),
+    read: false,
+  };
   var idx;
-  userSnapShot.followedBy.forEach((user,id)=>{
-    if(currentUserUid===user)
-    {
-      idx=id;
+  userSnapShot.followedBy.forEach((user, id) => {
+    if (currentUserUid === user) {
+      idx = id;
     }
-  })
-  userSnapShot.followedBy.splice(idx,1);
+  });
+  userSnapShot.followedBy.splice(idx, 1);
   // console.log(userSnapShot.following);
-  await updateDoc(UserDocRef,{
-    followedBy:[...userSnapShot.followedBy],
-    notifications:[...userSnapShot.notifications,notificationObj]
-  })
-}
+  await updateDoc(UserDocRef, {
+    followedBy: [...userSnapShot.followedBy],
+    notifications: [...userSnapShot.notifications, notificationObj],
+  });
+};
 
-
-export const addToFollowingHandler=async(currentUserUid,targetUid,userSnapShot)=>{
+export const addToFollowingHandler = async (
+  currentUserUid,
+  targetUid,
+  userSnapShot
+) => {
   const UserDocRef = doc(db, "users", currentUserUid);
   userSnapShot.following.push(targetUid);
-  await updateDoc(UserDocRef,{
-    following:[...userSnapShot.following]
-  })
-  await addToFollowedBy(currentUserUid,targetUid);
-}
-export const removeFromFollowingHandler=async(currentUserUid,targetUid,userSnapShot)=>{
+  await updateDoc(UserDocRef, {
+    following: [...userSnapShot.following],
+  });
+  await addToFollowedBy(currentUserUid, targetUid);
+};
+export const removeFromFollowingHandler = async (
+  currentUserUid,
+  targetUid,
+  userSnapShot
+) => {
   const UserDocRef = doc(db, "users", currentUserUid);
   var idx;
-  userSnapShot.following.forEach((user,id)=>{
-    if(targetUid===user)
-    {
-      idx=id;
+  userSnapShot.following.forEach((user, id) => {
+    if (targetUid === user) {
+      idx = id;
     }
-  })
-  userSnapShot.following.splice(idx,1);
-  await updateDoc(UserDocRef,{
-    following:[...userSnapShot.following]
-  })
-  await removeFromFollwedBy(currentUserUid,targetUid);
-}
+  });
+  userSnapShot.following.splice(idx, 1);
+  await updateDoc(UserDocRef, {
+    following: [...userSnapShot.following],
+  });
+  await removeFromFollwedBy(currentUserUid, targetUid);
+};
 
-
-
-export const removeFromUnreadHandler=async (notification,setNotificationArr,uid,unReadMessages)=>{
+export const removeFromUnreadHandler = async (
+  notification,
+  setNotificationArr,
+  uid,
+  unReadMessages
+) => {
   const UserDocRef = doc(db, "users", uid);
-  const userSnapShot=await getUserData(uid);
-  userSnapShot.notifications.forEach((notifi,idx)=>{
-    if(notifi.message ===notification.message  && notifi.notificationId===notification.notificationId)
-    {
-      notifi.read=true;
-      unReadMessages.splice(idx,1);
+  const userSnapShot = await getUserData(uid);
+  userSnapShot.notifications.forEach((notifi, idx) => {
+    if (
+      notifi.message === notification.message &&
+      notifi.notificationId === notification.notificationId
+    ) {
+      notifi.read = true;
+      unReadMessages.splice(idx, 1);
     }
-  })
+  });
   // console.log(unReadMessages)
   // userSnapShot.notifications.splice(id,1);
-  await updateDoc(UserDocRef,{
-    notifications:userSnapShot.notifications
-  })
+  await updateDoc(UserDocRef, {
+    notifications: userSnapShot.notifications,
+  });
   setNotificationArr(userSnapShot.notifications);
   // alert("Remove from Unread")
   return unReadMessages;
-}
+};
 
-
-
-export const clearNotifications=async (uid,setNotificationArr)=>{
+export const clearNotifications = async (uid, setNotificationArr) => {
   const UserDocRef = doc(db, "users", uid);
-  await updateDoc(UserDocRef,{
-    notifications:[]
-  })
+  await updateDoc(UserDocRef, {
+    notifications: [],
+  });
   setNotificationArr([]);
-}
+};
 
-
-export const collectImageObjects=async(uid)=>{
-  var arr=[];
-  const categoryMap=await getCategoriesAndDocument();
+export const collectImageObjects = async (uid) => {
+  var arr = [];
+  const categoryMap = await getCategoriesAndDocument();
   // console.log(categoryMap);
-  categoryMap.forEach((category,idx)=>{
-    category.arr.forEach((cat,idx)=>{
-      if(cat.userId===uid)
-      {
+  categoryMap.forEach((category, idx) => {
+    category.arr.forEach((cat, idx) => {
+      if (cat.userId === uid) {
         arr.push(cat);
       }
-    })
-  })
-  console.log(arr);
+    });
+  });
+  // console.log(arr);
   return arr;
-}
+};
 
+export const addUserReceipentMessage = async (messageRefId) => {
+  const MessageDocRef = doc(db, "chats", messageRefId);
+  const MessageSnapshot = await getDoc(MessageDocRef);
+  const createdAt = new Date();
+  const messageId = v4();
+  const messageObj = {
+    messages: [],
+    createdAt,
+    messageId,
+  };
+  if (!MessageSnapshot.exists()) {
+    await setDoc(MessageDocRef, messageObj);
+  }
+  return MessageSnapshot.messages;
+};
 
-
-
+export const addChatsToDb = async (messageRefId, chat, currentUserUid) => {
+  let currentDate = new Date();
+  const createdAt=currentDate.toJSON().slice(0, 10);
+  let createdTime=currentDate.getHours()+":"+currentDate.getMinutes();
+  const chatObj = {
+    chat: chat,
+    sender: currentUserUid,
+    createdAt,
+    createdTime
+  };
+  await updateDoc(doc(db, "chats", messageRefId), {
+    messages: arrayUnion(chatObj),
+  });
+};
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;

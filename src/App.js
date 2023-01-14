@@ -9,6 +9,8 @@ import SignUp from './components/SignUp/signUp.component';
 import { EditProfile } from './components/edit-profile/edit-profile.component';
 import { RequireAuth } from './components/RequireAuth/RequireAuth.component';
 import CreaterProfile from './components/CreaterProfile/createrProfile.component';
+import Message from './components/Messages/message.component';
+
 function App() {
   return (
       <Routes>
@@ -17,6 +19,7 @@ function App() {
         <Route path="signin" element={<Authentication />}/>
         <Route path="user" element={<RequireAuth><UserProfile /></RequireAuth>}/>
         <Route path="creater/:userId" element={<CreaterProfile />}/>
+        <Route path="creater/:userId/message" element={<Message />}/>
         <Route path="user/uploadWallpaper" element={<RequireAuth><UploadWallpaper /></RequireAuth>}/>
         <Route path="user/edit-profile" element={<RequireAuth><EditProfile /></RequireAuth>}/>
         <Route path="signup" element={<SignUp />}/>

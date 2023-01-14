@@ -7,5 +7,5 @@ export const RequireAuth = ({children}) => {
   {
     return <Navigate to='/signin'/>
   }  
-  return children
+  return children;
 }
