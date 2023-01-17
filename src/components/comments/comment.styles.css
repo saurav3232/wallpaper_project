@@ -1,0 +1,15 @@
+.commentsArray{
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: column;
+    border-radius: 10px;
+}
+.comment{
+    display: flex;
+    justify-content:flex-start;
+    flex-flow: wrap;
+}
+.comment-parts{
+    max-width: fit-content;
+    margin:5px;
+}

@@ -97,6 +97,8 @@ export const addImageLinktoDb = async (imageDoc) => {
       createdAt,
       likes,
       dislikes,
+      imageId: v4(),
+      comments: [],
     };
     const obj = {
       arr: [],
@@ -140,6 +142,83 @@ export const getCategoriesAndDocument = async () => {
     categoryMap = [...categoryMap, { category: doc.id, arr: doc.data().arr }];
   });
   return categoryMap;
+};
+
+export const getLikeCount = async (category, imageId) => {
+  const imageSnapshot = await getDoc(doc(db, "images", category));
+  imageSnapshot.data().arr.forEach((imgObj) => {
+    if (imgObj.imageId === imageId) {
+      // console.log(imgObj.likes)
+      return imgObj.likes;
+    }
+  });
+};
+export const getdisLikeCount = async (category, imageId) => {
+  const imageSnapshot = await getDoc(doc(db, "images", category));
+  imageSnapshot.data().arr.forEach((imgObj) => {
+    if (imgObj.imageId === imageId) {
+      // console.log(imgObj.likes)
+      return imgObj.dislikes;
+    }
+  });
+};
+
+export const updateImageViews = async (imageObj, createrId) => {
+  const imageInfo = await getImageInfo(imageObj);
+  const { category } = imageObj;
+  const imageRef = doc(db, "images", category);
+  const createrRef = doc(db, "users", createrId);
+  const createrSnapShot = await getUserData(createrId);
+  imageInfo.arr.map((image, idx) =>
+    image.imageUrl === imageObj.imageUrl
+      ? (image.imageViews = image.imageViews + 1)
+      : image.imageViews
+  );
+  await updateDoc(imageRef, {
+    arr: imageInfo.arr,
+  });
+  await updateDoc(createrRef, {
+    views: createrSnapShot.views + 1,
+  });
+};
+
+export const getCommentsArray = async (imageCategory, imageId) => {
+  const imageSnapshot = await getDoc(doc(db, "images", imageCategory));
+  const getObj = imageSnapshot
+    .data()
+    .arr.find((obj) => obj.imageId === imageId);
+  return getObj.comments;
+};
+
+export const addCommentsToDb = async (imageCategory, imageId, commentObj) => {
+  const imageSnapshot = await getDoc(doc(db, "images", imageCategory));
+  const modArray = [...imageSnapshot.data().arr];
+  modArray.forEach((imageObj) => {
+    if (imageObj.imageId === imageId) {
+      imageObj.comments = [...imageObj.comments, commentObj];
+    }
+  });
+  await updateDoc(doc(db, "images", imageCategory), {
+    arr: modArray,
+  });
+};
+
+export const deleteCommentsFromDb = async (
+  imageCategory,
+  commentId
+) => {
+  const imageSnapshot = await getDoc(doc(db, "images", imageCategory));
+  const modArray = [...imageSnapshot.data().arr];
+  modArray.forEach((obj) => {
+    obj.comments = obj.comments.filter(
+      (comment) => comment.commentId !== commentId
+    );
+  });
+
+  // console.log(modArray);
+  await updateDoc(doc(db,"images",imageCategory),{
+    arr:modArray
+  })
 };
 
 export const setProfileImageHandler = async (currentUser, profileImageLink) => {
@@ -225,6 +304,12 @@ export const getImageInfo = async (imageObj) => {
   return snapShot.data();
 };
 
+export const getSpecificImageInfo = async (category, imageId) => {
+  const snapShot = await getDoc(doc(db, "images", category));
+  return snapShot.data().arr.find((imgObj) => {
+    return imgObj.imageId === imageId;
+  });
+};
 export const toggleLikeValueDb = async (currentUser, imageObj, likevalue) => {
   const uid = currentUser.uid;
   const userDocRef = doc(db, "users", uid);
@@ -393,7 +478,6 @@ export const addNotificationOnLike = async (
   imageUrl
 ) => {
   const createrDoc = doc(db, "users", createrUid);
-  const createrSnapShot = await getUserData(createrUid);
   const userSnapShot = await getUserData(currentUserUid);
   const notificationObj = {
     message: `${userSnapShot.displayName} Liked Your Image at : ${imageUrl}`,
@@ -401,7 +485,7 @@ export const addNotificationOnLike = async (
     read: false,
   };
   await updateDoc(createrDoc, {
-    notifications: [...createrSnapShot.notifications, notificationObj],
+    notifications: arrayUnion(notificationObj),
   });
 };
 
@@ -541,16 +625,34 @@ export const addUserReceipentMessage = async (messageRefId) => {
   return MessageSnapshot.messages;
 };
 
-export const addChatsToDb = async (messageRefId, chat, currentUserUid) => {
+export const addChatsToDb = async (
+  messageRefId,
+  chat,
+  currentUserUid,
+  targetId
+) => {
   let currentDate = new Date();
-  const createdAt=currentDate.toJSON().slice(0, 10);
-  let createdTime=currentDate.getHours()+":"+currentDate.getMinutes();
+  const createdAt = currentDate.toJSON().slice(0, 10);
+  let createdTime = currentDate.getHours() + ":" + currentDate.getMinutes();
   const chatObj = {
     chat: chat,
     sender: currentUserUid,
     createdAt,
-    createdTime
+    createdTime,
   };
+  const targetUserRef = doc(db, "users", targetId);
+  const currentUserSnapShot = await getDoc(doc(db, "users", currentUserUid));
+  const notificationObj = {
+    message: `${
+      currentUserSnapShot.data().displayName
+    } sent you a message,You can view it at:
+    http://localhost:3000/creater/${currentUserUid}/message`,
+    notificationId: v4(),
+    read: false,
+  };
+  await updateDoc(targetUserRef, {
+    notifications: arrayUnion(notificationObj),
+  });
   await updateDoc(doc(db, "chats", messageRefId), {
     messages: arrayUnion(chatObj),
   });

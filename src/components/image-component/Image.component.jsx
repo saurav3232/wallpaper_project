@@ -5,6 +5,7 @@ import {
   checkLikedImage,
   getUserData,
 } from "../../utils/Firebase/Firebase.utils";
+import { updateImageViews } from "../../utils/Firebase/Firebase.utils";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/user.context";
@@ -86,7 +87,7 @@ const Image = (props) => {
         <div className="image-container">
           <div className="middle2">
             <div className="text">
-              <Link style={{textDecoration:"none"}} to={{pathname: `/creater/${catObj.userId}`}} onClick={()=>console.log("Page refreshed")}>
+              <Link style={{textDecoration:"none"}} to={{pathname: `/creater/${catObj.userId}`}} >
                 <div className="fpart">
                   <img
                     src={creater.profileImage}
@@ -100,7 +101,9 @@ const Image = (props) => {
               <Follow createrId={catObj.userId} />
             </div>
           </div>
-          <img src={catObj.imageUrl} alt="Avatar" className="image" />
+          <Link to={ `/image/${catObj.category}/${catObj.imageId}`} onClick={async()=>{await updateImageViews(catObj,catObj.userId)}}>
+            <img src={catObj.imageUrl} alt="Avatar" className="image" />
+          </Link>
           <div className="middle">
             <div className="text">
               <div className="fpart">

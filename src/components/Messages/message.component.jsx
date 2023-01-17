@@ -51,7 +51,7 @@ const Message = () => {
   }, [currentUser]);
 
   const onSendClickHandler = async () => {
-    await addChatsToDb(messageRefId, chat, currentUser.uid);
+    await addChatsToDb(messageRefId, chat, currentUser.uid,createrId);
     setChat("");
   };
   return (
