@@ -190,9 +190,14 @@ export const getCommentsArray = async (imageCategory, imageId) => {
   return getObj.comments;
 };
 
-export const addCommentsToDb = async (imageCategory, imageId, commentObj) => {
+export const addCommentsToDb = async (imageCategory, imageId, commentObj,createrId,currentUrl) => {
   const imageSnapshot = await getDoc(doc(db, "images", imageCategory));
   const modArray = [...imageSnapshot.data().arr];
+  const notificationObj = {
+    message: `${commentObj.createdBy} added a comment at ${currentUrl}`,
+    notificationId: v4(),
+    read: false,
+  };
   modArray.forEach((imageObj) => {
     if (imageObj.imageId === imageId) {
       imageObj.comments = [...imageObj.comments, commentObj];
@@ -201,6 +206,9 @@ export const addCommentsToDb = async (imageCategory, imageId, commentObj) => {
   await updateDoc(doc(db, "images", imageCategory), {
     arr: modArray,
   });
+  await updateDoc(doc(db,"users",createrId),{
+    notifications:arrayUnion(notificationObj)
+  })
 };
 
 export const deleteCommentsFromDb = async (

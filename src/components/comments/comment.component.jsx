@@ -16,6 +16,7 @@ import { deleteCommentsFromDb } from "../../utils/Firebase/Firebase.utils";
 const Comment = (props) => {
   const imageId = props.imageId;
   const imageCategory = props.imageCategory;
+  const createrId=props.createrId;
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
   const [commentsArray, setCommentsArray] = useState([]);
@@ -37,11 +38,17 @@ const Comment = (props) => {
     // eslint-disable-next-line
   }, []);
   const addToCommentsHandler = async () => {
+    if(comment==="")
+    {
+      alert("Comment Cannot be empty");
+      return;
+    }
     const getDate = new Date();
-    const day = getDate.getDay();
-    const month = getDate.getMonth();
+    const day = getDate.getDate();
+    const month = getDate.getMonth() + 1;
     const year = getDate.getFullYear();
     const currentUserInfo = await getUserData(currentUser.uid);
+    const currentUrl=window.location.href;
     const commentObj = {
       createdAt: `${day}/${month}/${year}`,
       createdBy: currentUserInfo.displayName,
@@ -49,7 +56,7 @@ const Comment = (props) => {
       createrId: currentUser.uid,
       commentId: v4(),
     };
-    await addCommentsToDb(imageCategory, imageId, commentObj);
+    await addCommentsToDb(imageCategory, imageId, commentObj,createrId,currentUrl);
     setComment("");
   };
   const deleteCommentsHandler = async (commentId) => {
@@ -90,11 +97,12 @@ const Comment = (props) => {
                 <div className="comment-parts">on "{comment.createdAt}"</div>
                 {currentUser.uid === comment.createrId ? (
                   <div className="comment-parts">
-                    <button type="button" className="btn btn-danger">
-                      <i
-                        className="bi bi-trash"
-                        onClick={() => deleteCommentsHandler(comment.commentId)}
-                      ></i>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => deleteCommentsHandler(comment.commentId)}
+                    >
+                      <i className="bi bi-trash"></i>
                     </button>
                   </div>
                 ) : (

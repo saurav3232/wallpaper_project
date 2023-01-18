@@ -247,7 +247,7 @@ export const ImagePage = () => {
                       <h1>Login to Access Comments</h1>
                     ):(
                       <>
-                        <Comment imageId={imageId} imageCategory={imageCategory}/>
+                        <Comment imageId={imageId} imageCategory={imageCategory} createrId={imageObj.userId}/>
                       </>
                     )}
                 </div>
