@@ -666,6 +666,29 @@ export const addChatsToDb = async (
   });
 };
 
+
+export const getQueryImage=async(queryImage)=>{
+  const collectionRef= collection(db,"images");
+  // console.log(queryImage);
+  const imageDbSnapshot=await getDocs(collectionRef);
+  var output=[];
+  imageDbSnapshot.docs.forEach((doc)=>{
+    doc.data().arr.forEach((imageObj,idx)=>{
+      if(imageObj.category===queryImage || imageObj.tagArray.includes(queryImage))
+      {
+        output.push(imageObj);
+      }
+    })
+  })
+  return output;
+} 
+
+
+
+
+
+
+
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 

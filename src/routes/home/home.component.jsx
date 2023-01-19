@@ -7,7 +7,8 @@ import { useContext } from "react";
 import { CollectionsContext } from "../../context/collections.context";
 import CollectionsPopUp from "../../components/collections-popUp/collections-popUp.component";
 import Modal from "react-modal";
-// import { Outlet } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const customStyles = {
   content: {
     top: "50%",
@@ -17,24 +18,32 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     maxWidth: "100vw",
-    backgroundColor:"rgb(129, 129, 234)",
+    backgroundColor: "rgb(129, 129, 234)",
   },
 };
 const Home = () => {
   const [categories, setCategories] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const { togglePopUpVal, setTogglePopUpVal} =useContext(CollectionsContext);
+  const [queryImage, setQueryImage] = useState("");
+  const navigate=useNavigate();
+  const { togglePopUpVal, setTogglePopUpVal } = useContext(CollectionsContext);
   useEffect(() => {
     const fetchData = async () => {
       const categoryMap = await getCategoriesAndDocument();
-        setCategories(categoryMap);
-        setIsLoading(false);
+      setCategories(categoryMap);
+      setIsLoading(false);
     };
     fetchData();
   }, []);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      // console.log("enter pressed");
+      navigate(`/search/${queryImage}`);
+    }
+  };
   return (
-    <div>
-      {/* <button type="button" onClick={()=>{setBookmark(["hehe"])}}>Change</button> */}
+    <div> 
       <div className="home-header">
         <h2>The best free Wallpapers</h2>
         <div className="home-header-input">
@@ -44,12 +53,18 @@ const Home = () => {
             id="basic-url"
             aria-describedby="basic-addon3"
             placeholder="Search Wallpapers"
+            value={queryImage}
+            onChange={(e) => {
+              setQueryImage(e.target.value);
+            }}
+            onKeyPress={handleKeyPress}
           />
-          <i className="fa-solid fa-magnifying-glass btn btn-primary"></i>
+          <Link to={{ pathname: `/search/${queryImage}` }}>
+            <i className="fa-solid fa-magnifying-glass btn btn-primary"></i>
+          </Link>
         </div>
       </div>
       <div>
-        {/* {togglePopUpVal && <CollectionsPopUp/>} */}
         <Modal
           isOpen={togglePopUpVal}
           onRequestClose={() => setTogglePopUpVal(!togglePopUpVal)}
@@ -60,8 +75,8 @@ const Home = () => {
         </Modal>
       </div>
       {!isLoading ? (
-        < >
-          <Categories categoryMap={categories}  />
+        <>
+          <Categories categoryMap={categories} />
         </>
       ) : (
         <div className="text-center  align-content-center">

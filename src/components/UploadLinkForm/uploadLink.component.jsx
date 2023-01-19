@@ -12,6 +12,10 @@ export const UploadLink = () => {
   const setCategoryHandler=(e)=>{
     setCategory(e.target.value);
   }
+  const SeperateByComma=(str)=>{
+    const arr=str.split(',');
+    return arr;
+  }
   const addTagHandler=()=>{
     if(tagArray.length!==0)
     {
@@ -22,8 +26,11 @@ export const UploadLink = () => {
         }
       })
     }
-    const newTagArray=[...tagArray,tagValue]
-    setTagArray(newTagArray)
+    const modTagVal=(tagValue).toLowerCase().replace(/\s/g,"");
+    const seperatedArray=SeperateByComma(modTagVal);
+    const newTagArray=tagArray.concat(seperatedArray);
+    setTagArray(newTagArray);
+    setTagValue("");
   }
   const setTagValueHandler=(e)=>{
     setTagValue(e.target.value)
@@ -39,14 +46,21 @@ export const UploadLink = () => {
   }
   const onSubmitHandler=async(e)=>{
     e.preventDefault();
+    const modCategory=(category).toLowerCase().replace(/\s/g,"");
     const imageDoc={
       imageUrl,
       tagArray,
-      category,
+      category:modCategory,
       userId:currentUser.uid
     }
     await addImageLinktoDb(imageDoc);
     resetFormFields();
+  }
+  const onTagKeyPressHandler=(e)=>{
+    if(e.key==='Enter')
+    {
+      addTagHandler();
+    }
   }
   return (
     <>
@@ -63,7 +77,7 @@ export const UploadLink = () => {
         </div>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Enter Tags </span>
-          <input type="text" className="form-control" placeholder="Add Tag" aria-label="Username" aria-describedby="basic-addon1" value={tagValue} onChange={setTagValueHandler}/>
+          <input type="text" className="form-control" placeholder="Add Tag" aria-label="Username" aria-describedby="basic-addon1" value={tagValue} onChange={setTagValueHandler} onKeyPress={onTagKeyPressHandler}/>
           <button type="button" className="btn btn-primary" onClick={addTagHandler}>Add Tag</button>
         </div>
         <ShowTags props={{tagArray,setTagArray}}/>

@@ -18,13 +18,25 @@ export const UploadImage = () => {
   const setCategoryHandler = (e) => {
     setCategory(e.target.value);
   };
+  const SeperateByComma=(str)=>{
+    const arr=str.split(',');
+    return arr;
+  }
   const addTagHandler = () => {
-    const newTagArray = [...tagArray, tagValue];
+    const modTagVal=(tagValue).toLowerCase().replace(/\s/g,"");
+    const seperatedArray=SeperateByComma(modTagVal);
+    const newTagArray=tagArray.concat(seperatedArray);
     setTagArray(newTagArray);
   };
   const setTagValueHandler = (e) => {
     setTagValue(e.target.value);
   };
+  const onTagKeyPressHandler=(e)=>{
+    if(e.key==='Enter')
+    {
+      addTagHandler();
+    }
+  }
   const resetFormFields = () => {
     setTagArray([]);
     setCategory("");
@@ -48,10 +60,11 @@ export const UploadImage = () => {
   }
   const onSubmitHandler=async (e)=>{
     e.preventDefault();
+    const modCategory=(category).toLowerCase().replace(/\s/g,"");
     const imageDoc={
       imageUrl,
       tagArray,
-      category,
+      category:modCategory,
       userId:currentUser.uid
     }
     await addImageLinktoDb(imageDoc);
@@ -95,6 +108,7 @@ export const UploadImage = () => {
             aria-describedby="basic-addon1"
             value={tagValue}
             onChange={setTagValueHandler}
+            onKeyPress={onTagKeyPressHandler}
           />
           <button
             type="button"
