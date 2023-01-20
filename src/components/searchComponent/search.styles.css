@@ -1,0 +1,13 @@
+.filterSearch .form-select{
+    /* max-width:100%; */
+    display: flex;
+    flex-flow:wrap;
+    width: 18% !important;
+    margin-bottom: 5px;
+}
+.filterSearch{
+    display: flex;
+    max-width: 100%;
+    flex-flow: wrap;
+    justify-content: flex-end;
+}

@@ -103,7 +103,7 @@ export const UploadImage = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Add Tag"
+            placeholder="Add Tag Seperated By ,"
             aria-label="Username"
             aria-describedby="basic-addon1"
             value={tagValue}

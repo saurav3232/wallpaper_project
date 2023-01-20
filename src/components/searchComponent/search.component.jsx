@@ -9,6 +9,8 @@ import { useContext } from "react";
 import { CollectionsContext } from "../../context/collections.context";
 import CollectionsPopUp from "../../components/collections-popUp/collections-popUp.component";
 import Modal from "react-modal";
+import Form from "react-bootstrap/Form";
+import "./search.styles.css";
 const customStyles = {
   content: {
     top: "50%",
@@ -25,11 +27,12 @@ export const Search = () => {
   const { togglePopUpVal, setTogglePopUpVal } = useContext(CollectionsContext);
   const params = useParams();
   const searchImage = params.queryImage.trim();
-  console.log(params.queryImage);
+  // console.log(params.queryImage);
   const [loading, setLoading] = useState(true);
   const [resultArray, setResultArray] = useState([]);
   useEffect(() => {
     const fetchImage = async () => {
+      console.log("useEffect called");
       const modQuery = searchImage.toLowerCase().replace(/\s/g, "");
       const searchArray = await getQueryImage(modQuery);
       setResultArray(searchArray);
@@ -38,7 +41,29 @@ export const Search = () => {
     fetchImage();
     // eslint-disable-next-line
   }, []);
-  //   console.log(searchImage);
+  function handleSortChange(e) {
+    const sortOption = e.target.value;
+    const newArray = resultArray.slice();
+    switch (sortOption) {
+      case "1":
+        newArray.sort((a, b) => b.imageViews - a.imageViews);
+        break;
+      case "2":
+        newArray.sort((a, b) => a.imageViews - b.imageViews);
+        break;
+      case "3":
+        newArray.sort((a, b) => b.likes - a.likes);
+        break;
+      case "4":
+        newArray.sort((a, b) => a.likes - b.likes);
+        break;
+      default:
+        break;
+    }
+    // call setState to re-render the component with the sorted array
+    setResultArray( newArray);
+  }
+
   return (
     <>
       {!loading ? (
@@ -56,10 +81,23 @@ export const Search = () => {
               >
                 <CollectionsPopUp />
               </Modal>
+              <div className="filterSearch container-fluid">
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(e) => handleSortChange(e)}
+                >
+                  <option>Sort Images</option>
+                  <option value="1">Most Views</option>
+                  <option value="2">Least Views</option>
+                  <option value="3">Most Likes</option>
+                  <option value="4">Least Likes</option>
+                </Form.Select>
+              </div>
               <div className="column">
+                {/* {console.log(resultArray)} */}
                 {resultArray.map((catObj, idx) => {
                   return (
-                    <Fragment key={idx}>
+                    <Fragment key={catObj.imageId}>
                       <Image catObj={catObj} />
                     </Fragment>
                   );

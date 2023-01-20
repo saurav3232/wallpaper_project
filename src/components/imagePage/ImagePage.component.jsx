@@ -98,10 +98,11 @@ export const ImagePage = () => {
     }
     await toggleLikeValueDb(currentUser, imageObj, toggle_likes);
     if (!toggle_likes) {
+      console.log(imageObj);
       await addNotificationOnLike(
         currentUser.uid,
         imageObj.userId,
-        imageObj.imageUrl
+        imageObj
       );
     }
     set_toggle_Likes(!toggle_likes);
@@ -233,6 +234,9 @@ export const ImagePage = () => {
                     >
                       Download Image
                     </button>
+                    <div>
+                      Views:{imageObj.imageViews}
+                    </div>
                     {!currentUser ? (
                       <i
                         className="bi bi-bookmark-plus icon-font-size"

@@ -77,7 +77,7 @@ export const UploadLink = () => {
         </div>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Enter Tags </span>
-          <input type="text" className="form-control" placeholder="Add Tag" aria-label="Username" aria-describedby="basic-addon1" value={tagValue} onChange={setTagValueHandler} onKeyPress={onTagKeyPressHandler}/>
+          <input type="text" className="form-control" placeholder="Add Tag Seperated By ," aria-label="Username" aria-describedby="basic-addon1" value={tagValue} onChange={setTagValueHandler} onKeyPress={onTagKeyPressHandler}/>
           <button type="button" className="btn btn-primary" onClick={addTagHandler}>Add Tag</button>
         </div>
         <ShowTags props={{tagArray,setTagArray}}/>

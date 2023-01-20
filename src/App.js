@@ -12,6 +12,7 @@ import CreaterProfile from './components/CreaterProfile/createrProfile.component
 import Message from './components/Messages/message.component';
 import { ImagePage } from './components/imagePage/ImagePage.component';
 import { Search } from './components/searchComponent/search.component';
+import CategoriesPreview from './components/categoriesPreview/categoriesPreview.compnent';
 function App() {
   return (
       <Routes>
@@ -25,6 +26,7 @@ function App() {
         <Route path="user/edit-profile" element={<RequireAuth><EditProfile /></RequireAuth>}/>
         <Route path="image/:imgCategory/:imgId" element={<ImagePage />}/>
         <Route path="search/:queryImage" element={<Search/>}/>
+        <Route path="category/:imageCategory" element={<CategoriesPreview/>}/>
         <Route path="signup" element={<SignUp />}/>
         </Route>
     </Routes>

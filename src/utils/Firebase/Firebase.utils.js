@@ -99,6 +99,7 @@ export const addImageLinktoDb = async (imageDoc) => {
       dislikes,
       imageId: v4(),
       comments: [],
+      imageViews:0,
     };
     const obj = {
       arr: [],
@@ -143,6 +144,11 @@ export const getCategoriesAndDocument = async () => {
   });
   return categoryMap;
 };
+
+export const getSpecificCategory =async(category)=>{
+  const docSnapShot=await getDoc(doc(db,"images",category));
+  return docSnapShot.data().arr;
+}
 
 export const getLikeCount = async (category, imageId) => {
   const imageSnapshot = await getDoc(doc(db, "images", category));
@@ -483,12 +489,15 @@ export const removeFromCollection = async (uid, imageUrl) => {
 export const addNotificationOnLike = async (
   currentUserUid,
   createrUid,
-  imageUrl
+  imageObj
 ) => {
+  console.log(imageObj)
   const createrDoc = doc(db, "users", createrUid);
   const userSnapShot = await getUserData(currentUserUid);
+  const category=imageObj.category;
+  const imageId=imageObj.imageId;
   const notificationObj = {
-    message: `${userSnapShot.displayName} Liked Your Image at : ${imageUrl}`,
+    message: `${userSnapShot.displayName} Liked Your Image at :http://localhost:3000/image/${category}/${imageId}`,
     notificationId: v4(),
     read: false,
   };

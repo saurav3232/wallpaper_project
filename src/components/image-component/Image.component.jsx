@@ -36,7 +36,7 @@ const Image = (props) => {
       await addNotificationOnLike(
         currentUser.uid,
         catObj.userId,
-        catObj.imageUrl
+        catObj
       );
     }
     set_toggle_Likes(!toggle_likes);
