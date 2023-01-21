@@ -52,6 +52,11 @@ const NavigationBar = () => {
                   My Profile
                 </NavLink>
               </li>
+              <li>
+                <NavLink className="nav-link active" to="/leaderboard">
+                  Leader Boards
+                </NavLink>
+              </li>
             </ul>
             <ul className="navbar-nav ms-auto">
               <li>

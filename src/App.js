@@ -13,6 +13,7 @@ import Message from './components/Messages/message.component';
 import { ImagePage } from './components/imagePage/ImagePage.component';
 import { Search } from './components/searchComponent/search.component';
 import CategoriesPreview from './components/categoriesPreview/categoriesPreview.compnent';
+import Leaderboard from './components/leaderBoard/leaderBoard.component';
 function App() {
   return (
       <Routes>
@@ -27,6 +28,7 @@ function App() {
         <Route path="image/:imgCategory/:imgId" element={<ImagePage />}/>
         <Route path="search/:queryImage" element={<Search/>}/>
         <Route path="category/:imageCategory" element={<CategoriesPreview/>}/>
+        <Route path="leaderboard" element={<Leaderboard/>}/>
         <Route path="signup" element={<SignUp />}/>
         </Route>
     </Routes>

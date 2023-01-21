@@ -26,7 +26,7 @@ export const Categories = (props) => {
             {cat.arr
               .filter((_, idx) => idx < 4)
               .map((catObj) => (
-                <Image catObj={catObj} />
+                <Image catObj={catObj} key={catObj.imageId}/>
               ))}
           </div>
         </Fragment>

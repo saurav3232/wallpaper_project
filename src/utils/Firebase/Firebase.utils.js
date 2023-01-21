@@ -76,6 +76,7 @@ export const createUserDocumentFromAuth = async (
         profileImage,
         facebookId: "",
         instagramId: "",
+        uid:userAuth.uid,
         ...additionalInformation,
       });
     } catch (error) {
@@ -144,6 +145,17 @@ export const getCategoriesAndDocument = async () => {
   });
   return categoryMap;
 };
+
+export const getUserList=async()=>{
+  const collectionRef = collection(db, "users");
+  const alldocs =await getDocs(collectionRef);
+  let userArray=[];
+  alldocs.forEach((doc)=>{
+    userArray.push(doc.data())
+  })
+  userArray.sort((a,b)=>b.views-a.views)
+  return userArray;
+}
 
 export const getSpecificCategory =async(category)=>{
   const docSnapShot=await getDoc(doc(db,"images",category));
