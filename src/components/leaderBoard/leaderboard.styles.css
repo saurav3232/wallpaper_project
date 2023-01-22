@@ -3,9 +3,12 @@
     justify-content: center;
     max-height: 100vh;
     max-width: 100vw;
+    overflow-x: auto;
     /* align-items: center; */
 }
-
+/* table{
+    max-width: 100vw;
+} */
 th {
     padding: 0 15px;
     width: min-content;

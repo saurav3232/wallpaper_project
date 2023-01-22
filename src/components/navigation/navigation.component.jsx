@@ -57,6 +57,11 @@ const NavigationBar = () => {
                   Leader Boards
                 </NavLink>
               </li>
+              <li>
+                <NavLink className="nav-link active" to="/myfeed">
+                  My Feeds
+                </NavLink>
+              </li>
             </ul>
             <ul className="navbar-nav ms-auto">
               <li>

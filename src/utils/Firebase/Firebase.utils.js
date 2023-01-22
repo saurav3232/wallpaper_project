@@ -157,6 +157,21 @@ export const getUserList=async()=>{
   return userArray;
 }
 
+export const getFeedInfo = async (currentUserUid) => {
+  const userInfo = await getUserData(currentUserUid);
+  let promises = userInfo.following.map(async (targetUid) => {
+    const targetInfo = await getUserData(targetUid);
+    const imageArray = await collectImageObjects(targetUid);
+    return {
+      followerTitle: targetInfo.displayName,
+      imageObjects: imageArray
+    }
+  });
+  const output = await Promise.all(promises);
+  return output;
+}
+
+
 export const getSpecificCategory =async(category)=>{
   const docSnapShot=await getDoc(doc(db,"images",category));
   return docSnapShot.data().arr;
