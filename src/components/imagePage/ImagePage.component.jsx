@@ -20,6 +20,7 @@ import Modal from "react-modal";
 import { CollectionsContext } from "../../context/collections.context";
 import { Link } from "react-router-dom";
 import Comment from "../comments/comment.component";
+import { saveAs } from 'file-saver';
 const customStyles = {
   content: {
     top: "50%",
@@ -122,20 +123,21 @@ export const ImagePage = () => {
 
   const download = async () => {
 
-     fetch(imageObj.imageUrl,{
-      mode:"no-cors",
+    //  fetch(imageObj.imageUrl,{
+    //   mode:"no-cors",
 
-    })
-    .then(response => response.blob())
-    .then(blob => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'image.jpeg';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-    });
+    // })
+    // .then(response => response.blob())
+    // .then(blob => {
+    //     const url = URL.createObjectURL(blob);
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.download = 'image.jpeg';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     link.remove();
+    // });
+    saveAs(imageObj.imageUrl,"image")
     
   };
 
