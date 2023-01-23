@@ -2,7 +2,7 @@
     flex-flow: row;
     justify-content: space-between;
     align-items: flex-start;
-    
+    overflow-x: auto;
 }
 
 /* .column img {

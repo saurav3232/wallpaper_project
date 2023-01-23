@@ -524,7 +524,7 @@ export const addNotificationOnLike = async (
   const category=imageObj.category;
   const imageId=imageObj.imageId;
   const notificationObj = {
-    message: `${userSnapShot.displayName} Liked Your Image at :http://localhost:3000/image/${category}/${imageId}`,
+    message: `${userSnapShot.displayName} Liked Your Image at :https://photos-hub.netlify.app/image/${category}/${imageId}`,
     notificationId: v4(),
     read: false,
   };
@@ -690,7 +690,7 @@ export const addChatsToDb = async (
     message: `${
       currentUserSnapShot.data().displayName
     } sent you a message,You can view it at:
-    http://localhost:3000/creater/${currentUserUid}/message`,
+    https://photos-hub.netlify.app/creater/${currentUserUid}/message`,
     notificationId: v4(),
     read: false,
   };

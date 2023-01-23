@@ -70,15 +70,22 @@ const CreaterProfile = () => {
               </div>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {!currentUser ? (
-                  <button type="button" className="btn btn-info" onClick={()=>alert("login to Continue")}>
+                  <button
+                    type="button"
+                    className="btn btn-info"
+                    onClick={() => alert("login to Continue")}
+                  >
                     Message
                   </button>
                 ) : (
-                  <Link to={{pathname: `/creater/${createrId}/message`}}>
-                  <button type="button" className="btn btn-info" creater={creater}>
-                    Message
-                  </button>
-
+                  <Link to={{ pathname: `/creater/${createrId}/message` }}>
+                    <button
+                      type="button"
+                      className="btn btn-info"
+                      creater={creater}
+                    >
+                      Message
+                    </button>
                   </Link>
                 )}
               </div>
@@ -97,7 +104,9 @@ const CreaterProfile = () => {
             </Modal>
           </div>
           <h1>Uploaded Wallpapers</h1>
-          <ImageGrid categoryArray={categoryArray} />
+          <div className="container-fluid">
+            <ImageGrid categoryArray={categoryArray} />
+          </div>
           <div className="profile-links">
             {creater.facebookId ? (
               <a
