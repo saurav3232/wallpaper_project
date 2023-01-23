@@ -73,8 +73,13 @@ export const UploadLink = () => {
         </div>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Enter Category</span>
-          <input type="text" className="form-control" placeholder="Category" aria-label="Username" aria-describedby="basic-addon1" value={category} onChange={setCategoryHandler}/>
+          <input type="text" className="form-control" placeholder="Category" aria-label="Username" aria-describedby="basic-addon1" value={category} onChange={setCategoryHandler} required/>
         </div>
+        <ul>
+          <li>Click on Add tags after entering tags</li>
+          <li>Tags should be Seperated By ","</li>
+          <li>Tags are required for improved searching</li>
+        </ul>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Enter Tags </span>
           <input type="text" className="form-control" placeholder="Add Tag Seperated By ," aria-label="Username" aria-describedby="basic-addon1" value={tagValue} onChange={setTagValueHandler} onKeyPress={onTagKeyPressHandler}/>
